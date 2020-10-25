@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Web;
+using Microsoft.Practices.Unity.Configuration.ConfigurationHelpers;
 
 namespace BrInCalcTest.Models
 {
@@ -13,8 +15,8 @@ namespace BrInCalcTest.Models
 
         public FileVariables(string first, string second)
         {
-            First = first;
-            Second = second;
+            First = first?.Trim()?.ToLower()??string.Empty;
+            Second = second?.Trim()?.ToLower()??string.Empty;
         }
 
         public string First { get; set; } = string.Empty;
@@ -28,6 +30,8 @@ namespace BrInCalcTest.Models
         public double DValue => _dSecond;
 
         public bool IsSecondVariableInt => double.TryParse(Second, out _dSecond);
+
+        
 
     }
 
@@ -45,5 +49,13 @@ namespace BrInCalcTest.Models
         public bool IsFileValuesValid => AllFileVariables.Any(a => a.IsLineInValid);
 
         public string DisplayMessage { get; set; }
+
+        public string FileContent { get; set; }
+
+        public bool IsValidToCalculate { get; set; } = false;
+
+        public string[] Lines { get; set; }
     }
+
+
 }

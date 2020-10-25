@@ -27,7 +27,7 @@ namespace BrInCalcTest.BO
             List<FileVariables> fileVariable = new List<FileVariables>();
             foreach (string sLine in sLines)
             {
-                var sOpeDevalue = sLine.Split(new[] { ' ' }, 2);
+                var sOpeDevalue = sLine.Split(new[] { ' ','\t' }, 2);
                 var strOne=String.Empty;
                 var strTwo=string.Empty;
                 if (sOpeDevalue.Length > 0)

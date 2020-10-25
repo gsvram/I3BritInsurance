@@ -9,8 +9,7 @@ namespace BrInCalcTest.BO.Interface
 {
     public interface ICalculate
     {
-        FileDetails CalculateResults(FileDetails fileDetails);
-
-        double Operator(string operatorType, double dValue);
+        
+        double Operator(string operatorType, double dValue, double result);
     }
 }

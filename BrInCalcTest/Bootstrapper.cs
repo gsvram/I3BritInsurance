@@ -21,7 +21,7 @@ namespace BrInCalcTest
 
             container.RegisterType<IProcessFile, ProcessFile>();
             container.RegisterType<ICalculate, Calculate>();
-
+            container.RegisterType<IFileContentValidator, FileContentValidator>();
             return container;
         }
     }

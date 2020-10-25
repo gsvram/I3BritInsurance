@@ -9,45 +9,30 @@ namespace BrInCalcTest.BO
 {
     public class Calculate : ICalculate
     {
-        private double _result = 0;
-        public FileDetails CalculateResults(FileDetails fileDetails)
-        {
-            if (fileDetails == null) return null;
-            _result = fileDetails?.DApplyValue ?? 0;
-            var listRw = fileDetails?.AllFileVariables?.Where(x => x.First.ToLower() != "apply");
-            if (listRw == null) fileDetails.DResults = 0;
-            if (listRw != null)
-            {
-                foreach (var rw in listRw)
-                {
-                    fileDetails.DResults = Operator(rw.First, rw.DValue);
-                }
-            }
+        
+       
 
-            return fileDetails;
-        }
-
-        public double Operator(string operatorType, double dValue)
+        public double Operator(string operatorType, double dValue,double result)
         {
-            switch (operatorType)
+            switch (operatorType?.ToLower())
             {
                 case "add":
-                    _result = Add(_result, dValue);
+                    result = Add(result, dValue);
                     break;
                 case "subtract":
-                    _result = Sub(_result, dValue);
+                    result = Sub(result, dValue);
                     break;
                 case "multiply":
-                    _result = Mul(_result, dValue);
+                    result = Mul(result, dValue);
                     break;
                 case "divide":
-                    _result = Div(_result, dValue);
+                    result = Div(result, dValue);
                     break;
                 default:
                     break;
             }
 
-            return _result;
+            return result;
 
         }
 

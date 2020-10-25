@@ -14,10 +14,12 @@ namespace BrInCalcTest.Controllers
 
         private readonly ICalculate _clac;
         private readonly IProcessFile _file;
-        public HomeController(ICalculate calc, IProcessFile file)
+        private readonly IFileContentValidator _fileContentValidator;
+        public HomeController(ICalculate calc, IProcessFile file, IFileContentValidator fileContentValidator)
         {
             _clac = calc;
             _file = file;
+            _fileContentValidator = fileContentValidator;
         }
         public ActionResult Index()
         {
@@ -45,7 +47,7 @@ namespace BrInCalcTest.Controllers
             FileDetails fileDetails = new FileDetails();
             try
             {
-                if (fileCalc.ContentLength <= 0) ViewBag.Message = "Sorry failed to upload file";
+                if (fileCalc.ContentLength <= 0) fileDetails.DisplayMessage = "Sorry failed to upload file";
 
                 string fileName = Path.GetFileName(fileCalc.FileName);
                 string filepath = Path.Combine(Server.MapPath("~/BritUpload"), fileName);
@@ -56,15 +58,29 @@ namespace BrInCalcTest.Controllers
                     fileContent = sr.ReadToEnd();
                 }
                 var fileLines = _file.GetLinesFromFile(fileContent);
-                var listFV = _file.SplitOperatorsandValues(fileLines);
+                var listFv = _file.SplitOperatorsandValues(fileLines);
                 fileDetails = new FileDetails
                 {
-                    AllFileVariables = listFV
+                    Lines = fileLines,
+                    AllFileVariables = listFv,
+                    FileContent = fileContent
                 };
-
                
               if(Validate(fileDetails))
-                _clac.CalculateResults(fileDetails);
+              {
+                  var result = fileDetails?.DApplyValue ?? 0;
+                  var listRw = fileDetails?.AllFileVariables?.Where(x => x.First.ToLower() != "apply");
+                  if (listRw == null) fileDetails.DResults = 0;
+                  if (listRw != null)
+                  {
+                      foreach (var rw in listRw)
+                      {
+                          result = _clac.Operator(rw.First, rw.DValue, result);
+                      }
+
+                      fileDetails.DResults = result;
+                  }
+                }
 
                
                 return View("Index", fileDetails);
@@ -79,26 +95,37 @@ namespace BrInCalcTest.Controllers
 
         public bool Validate(FileDetails fileDetails)
         {
-            bool bvalidate = true;
-            if (fileDetails.AllFileVariables.Count < 2)
+            fileDetails.IsValidToCalculate = true;
+            if (!_fileContentValidator.ValidateTotalLinesGreaterThanTwo(fileDetails.AllFileVariables))
             {
                 fileDetails.DisplayMessage += $"\r\n Number of Inputs are less than 1";
-                bvalidate = false;
+                fileDetails.IsValidToCalculate = false;
             }
 
-            if (!fileDetails.IsApplyExists)
+            if (!_fileContentValidator.ValidateIsApplyExists(fileDetails))
             {
-                fileDetails.DisplayMessage += $"\r\n Apply not exits.";
-                bvalidate = false;
+                fileDetails.DisplayMessage += $"\r\n Apply not exists.";
+                fileDetails.IsValidToCalculate  = false;
             }
 
-            if (fileDetails.AllFileVariables.Count(x => x.IsSecondVariableInt) != fileDetails.AllFileVariables.Count())
+            if (!_fileContentValidator.ValidateAllSecondPartCanConvertToInt(fileDetails.AllFileVariables))
             {
                 fileDetails.DisplayMessage += $"\r\n Not able to identify number.";
-                bvalidate = false;
+                fileDetails.IsValidToCalculate  = false;
             }
 
-            return bvalidate;
+            if (!_fileContentValidator.ValidateOperatorsValid(fileDetails.AllFileVariables))
+            {
+                fileDetails.DisplayMessage += $"\r\n Operators passed are not valid.";
+                fileDetails.IsValidToCalculate  = false;
+            }
+
+            if (!_fileContentValidator.ValidateApplyShouldBeLast(fileDetails.Lines))
+            {
+                fileDetails.DisplayMessage += $"\r\n apply should be last statement.";
+                fileDetails.IsValidToCalculate = false;
+            }
+            return fileDetails.IsValidToCalculate;
 
         }
     }

@@ -134,7 +134,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="BO\Calculate.cs" />
+    <Compile Include="BO\FileContentValidator.cs" />
     <Compile Include="BO\Interface\ICalculate.cs" />
+    <Compile Include="BO\Interface\IFileContentValidator.cs" />
     <Compile Include="BO\Interface\IProcessFile.cs" />
     <Compile Include="BO\ProcessFile.cs" />
     <Compile Include="Controllers\HomeController.cs" />

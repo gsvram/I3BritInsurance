@@ -5,35 +5,82 @@
 @model BrInCalcTest.Models.FileDetails
 
 <div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    <h1>Welcome BrIns Calculation</h1>
+   
 </div>
 
 <div class="row">
-    <div class="col-md-4">
-        <h1>Welcome BrIns Calculation</h1>
+    <div class="col-md-12" style="padding-left:30px">
+        <h1></h1>
         
-        <h2>UploadFile your file</h2>
+       
 
         @using (Html.BeginForm("UploadCalcFile", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
 
-            <div>
-                @Html.TextBox("fileCalc", "Upload Your File Here", new { type = "file" }) <br />
+        <div>
+            <h2>Upload your file</h2>
+            <br /><br />
+            <div class="row">
+                <div class="col-md-10 alert-info">
+                    add 2
+                    <br />
+                    multiply 3
+                    <br />
+                    multiply 4
+                    <br />
+                    subtract 3
+                    <br />
+                    divide 8
+                    <br />
+                    subtract 9
+                    <br />
+                    apply 3
+                    <br /> <br />
+                    <br /> <span style="font-style: italic">**note : apply should be last line</span>
+                </div>
 
-                <input type="submit" value="Upload" />
-                <br/>
-                @if (@Model != null)
-                {
-                    <span style="color: red;font-weight:bold">@Model.DisplayMessage</span>
-
-
-                
-                    <span style="color: green;font-weight:bold"> Results @Model.DResults</span>
-                }
-
+                <br /> <br /> <br /> <br /> <br /> <br />
             </div>
+            <br /> <br /> <br /> <br /> <br />
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="col-lg-6"> @Html.TextBox("fileCalc", "Upload Your File Here", new { type = "file" })</div>
+                    <div class="col-lg-3"> <input type="submit" value="Upload" /> </div>
+                </div>
+            </div>
+            <br />
+
+
+            <br />
+            @if (@Model != null)
+            {
+                <div style="background-color: azure; white-space: pre-line">
+                    <span style="color: black; text-align: left; font-weight: bold">Uploaded File Content</span><br />
+                    <span style="color: black; text-align: left; white-space: pre-line">
+                        @Html.Raw(Model.FileContent.Replace("\r\n", "<br>"))
+                    </span>
+                </div>
+                <br />
+                <br />
+                if (!Model.IsValidToCalculate)
+                {
+                    <div class="alert-danger alert">
+                        <span style="color: black; text-align: left; font-weight: bold">Validation Output</span><br />
+                        <span style="color: maroon; font-weight: bold; white-space: pre-line">
+                            @Html.Raw(Model.DisplayMessage.Replace("\r\n", "<br>"))
+                        </span>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert-success alert">
+                        <span style="color: black; text-align: left; font-weight: bold">Result</span><br />
+                        <span style="color: green; font-weight: bold; white-space: pre-line"> Results @Model.DResults</span>
+                    </div>
+                }
+            }
+        </div>
 
 
         }
