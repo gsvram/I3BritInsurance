@@ -10,7 +10,7 @@ namespace BrInCalcTest.BO
     public class Calculate : ICalculate
     {
         
-       
+       ///Operator Method
 
         public double Operator(string operatorType, double dValue,double result)
         {
