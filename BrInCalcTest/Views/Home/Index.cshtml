@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+
+}
+@model BrInCalcTest.Models.FileDetails
+
+<div class="jumbotron">
+    <h1>ASP.NET</h1>
+    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h1>Welcome BrIns Calculation</h1>
+        
+        <h2>UploadFile your file</h2>
+
+        @using (Html.BeginForm("UploadCalcFile", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+
+            <div>
+                @Html.TextBox("fileCalc", "Upload Your File Here", new { type = "file" }) <br />
+
+                <input type="submit" value="Upload" />
+                <br/>
+                @if (@Model != null)
+                {
+                    <span style="color: red;font-weight:bold">@Model.DisplayMessage</span>
+
+
+                
+                    <span style="color: green;font-weight:bold"> Results @Model.DResults</span>
+                }
+
+            </div>
+
+
+        }
+    </div>
+</div>
